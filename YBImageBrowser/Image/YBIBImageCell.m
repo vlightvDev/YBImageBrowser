@@ -418,13 +418,6 @@
 
         } else {
 
-            NSLog(@" isZooming      = %d\n zoomScale      = %lf\n zooming        = %d\n zoomBouncing   = %d\n isZoomBouncing = %d\n bouncesZoom    = %d\n", self.imageScrollView.isZooming,
-                  self.imageScrollView.zoomScale,
-                  self.imageScrollView.zooming,
-                  self.imageScrollView.zoomBouncing,
-                  self.imageScrollView.isZoomBouncing,
-                  self.imageScrollView.bouncesZoom);
-
             // Start. 这个判断去掉了(!self.yb_cellIsInCenter())
             if (CGPointEqualToPoint(_interactStartPoint, CGPointZero) || self.yb_currentPage() != self.yb_selfPage() || self.imageScrollView.isZooming) {
                 return;
@@ -435,9 +428,7 @@
             BOOL shouldStart = NO;
             /// 最后一张图且是向左滑动
             if(data.lastImage && self.imageScrollView.zoomScale <= 1 && velocity.x < 0 && self.imageScrollView.contentOffset.y <= 0) {
-                
-                NSLog(@" _leftScroll 222222 %@", NSStringFromCGPoint(velocity));
-                
+                                
                 if (!_leftScroll) {
                     _leftScroll = YES;
                 }
