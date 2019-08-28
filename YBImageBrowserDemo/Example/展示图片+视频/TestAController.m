@@ -24,7 +24,7 @@
         NSMutableArray *array = [NSMutableArray array];
         [array addObjectsFromArray:[BaseFileManager imageURLs]];
         [array addObjectsFromArray:[BaseFileManager imageNames]];
-        [array addObjectsFromArray:[BaseFileManager videos]];
+//        [array addObjectsFromArray:[BaseFileManager videos]];
         self.dataArray = array;
     }
     return self;
@@ -37,6 +37,8 @@
 #pragma mark - override
 
 - (void)selectedIndex:(NSInteger)index {
+    
+    NSInteger count = self.dataArray.count - 1;
     
     NSMutableArray *datas = [NSMutableArray array];
     [self.dataArray enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -63,6 +65,9 @@
             YBIBImageData *data = [YBIBImageData new];
             data.imageURL = [NSURL URLWithString:obj];
             data.projectiveView = [self viewAtIndex:idx];
+            if (idx == count) {
+                data.lastImage = YES;
+            }
             [datas addObject:data];
             
         } else {
@@ -70,6 +75,9 @@
             // 本地图片
             YBIBImageData *data = [YBIBImageData new];
             data.imageName = obj;
+            if (idx == count) {
+                data.lastImage = YES;
+            }
             data.projectiveView = [self viewAtIndex:idx];
             [datas addObject:data];
             

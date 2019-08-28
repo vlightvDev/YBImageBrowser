@@ -18,30 +18,30 @@
 
 - (void)ybib_showLoadingWithProgress:(CGFloat)progress {
     [self ybib_addLoadingView];
-    [self.ybib_loading showProgress:progress];
+//    [self.ybib_loading showProgress:progress];
 }
 
 - (void)ybib_showLoading {
     [self ybib_addLoadingView];
-    [self.ybib_loading show];
+//    [self.ybib_loading show];
 }
 
 - (void)ybib_showLoadingWithText:(NSString *)text click:(void (^)(void))click {
     [self ybib_addLoadingView];
-    [self.ybib_loading showText:text click:click];
+//    [self.ybib_loading showText:text click:click];
 }
 
 - (void)ybib_addLoadingView {
-    YBIBLoadingView *loading = self.ybib_loading;
-    if (!loading.superview) {
-        [self addSubview:loading];
-        loading.translatesAutoresizingMaskIntoConstraints = NO;
-        NSLayoutConstraint *layA = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        NSLayoutConstraint *layB = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-        NSLayoutConstraint *layC = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        NSLayoutConstraint *layD = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        [self addConstraints:@[layA, layB, layC, layD]];
-    }
+//    YBIBLoadingView *loading = self.ybib_loading;
+//    if (!loading.superview) {
+//        [self addSubview:loading];
+//        loading.translatesAutoresizingMaskIntoConstraints = NO;
+//        NSLayoutConstraint *layA = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+//        NSLayoutConstraint *layB = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+//        NSLayoutConstraint *layC = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+//        NSLayoutConstraint *layD = [NSLayoutConstraint constraintWithItem:loading attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+//        [self addConstraints:@[layA, layB, layC, layD]];
+//    }
 }
 
 - (void)ybib_hideLoading {

@@ -22,6 +22,12 @@
 @implementation YBIBImageCell {
     CGPoint _interactStartPoint;
     BOOL _interacting;
+    
+    /// YangBo添加↓↓↓↓↓
+    // 是否左滑
+    BOOL _leftScroll;
+    // 是否开始了下滑或上滑
+    /// YangBo添加↑↑↑↑↑
 }
 
 #pragma mark - life cycle
@@ -357,7 +363,13 @@
             CGPoint velocity = [pan velocityInView:self.imageScrollView];
             
             BOOL velocityArrive = ABS(velocity.y) > profile.dismissVelocityY;
-            BOOL distanceArrive = ABS(point.y - _interactStartPoint.y) > containerSize.height * profile.dismissScale;
+            BOOL distanceArrive = NO;
+            
+            if (_leftScroll) { // 左滑，走左滑的计算
+                distanceArrive = ABS(point.x - _interactStartPoint.x) > containerSize.width * profile.dismissScale;
+            } else {
+                distanceArrive = ABS(point.y - _interactStartPoint.y) > containerSize.height * profile.dismissScale;
+            }
             
             BOOL shouldDismiss = distanceArrive || velocityArrive;
             if (shouldDismiss) {
@@ -367,35 +379,80 @@
             }
         }
         
+        _leftScroll = NO;
+        
     } else if (pan.state == UIGestureRecognizerStateChanged) {
+        
+        YBIBImageData *data = self.yb_cellData;
+        
         if (_interacting) {
+            
+            if (_leftScroll) {
 
-            // Change.
-            self.imageScrollView.center = point;
-            CGFloat scale = 1 - ABS(point.y - _interactStartPoint.y) / (containerSize.height * 1.2);
-            if (scale > 1) scale = 1;
-            if (scale < 0.35) scale = 0.35;
-            self.imageScrollView.transform = CGAffineTransformMakeScale(scale, scale);
-
-            CGFloat alpha = 1 - ABS(point.y - _interactStartPoint.y) / (containerSize.height * 0.7);
-            if (alpha > 1) alpha = 1;
-            if (alpha < 0) alpha = 0;
-            self.yb_backView.backgroundColor = [self.yb_backView.backgroundColor colorWithAlphaComponent:alpha];
+                // Change.
+                self.imageScrollView.center = point;
+                CGFloat scale = 1 - ABS(point.x - _interactStartPoint.x) / (containerSize.width * 1.2);
+                if (scale > 1) scale = 1;
+                if (scale < 0.35) scale = 0.35;
+                self.imageScrollView.transform = CGAffineTransformMakeScale(scale, scale);
+                
+                CGFloat alpha = 1 - ABS(point.x - _interactStartPoint.x) / (containerSize.width * 0.7);
+                if (alpha > 1) alpha = 1;
+                if (alpha < 0) alpha = 0;
+                self.yb_backView.backgroundColor = [self.yb_backView.backgroundColor colorWithAlphaComponent:alpha];
+                
+            } else {
+                
+                // Change.
+                self.imageScrollView.center = point;
+                CGFloat scale = 1 - ABS(point.y - _interactStartPoint.y) / (containerSize.height * 1.2);
+                if (scale > 1) scale = 1;
+                if (scale < 0.35) scale = 0.35;
+                self.imageScrollView.transform = CGAffineTransformMakeScale(scale, scale);
+                
+                CGFloat alpha = 1 - ABS(point.y - _interactStartPoint.y) / (containerSize.height * 0.7);
+                if (alpha > 1) alpha = 1;
+                if (alpha < 0) alpha = 0;
+                self.yb_backView.backgroundColor = [self.yb_backView.backgroundColor colorWithAlphaComponent:alpha];
+            }
 
         } else {
 
-            // Start.
-            if (CGPointEqualToPoint(_interactStartPoint, CGPointZero) || self.yb_currentPage() != self.yb_selfPage() || !self.yb_cellIsInCenter() || self.imageScrollView.isZooming) return;
+            NSLog(@" isZooming      = %d\n zoomScale      = %lf\n zooming        = %d\n zoomBouncing   = %d\n isZoomBouncing = %d\n bouncesZoom    = %d\n", self.imageScrollView.isZooming,
+                  self.imageScrollView.zoomScale,
+                  self.imageScrollView.zooming,
+                  self.imageScrollView.zoomBouncing,
+                  self.imageScrollView.isZoomBouncing,
+                  self.imageScrollView.bouncesZoom);
 
+            // Start. 这个判断去掉了(!self.yb_cellIsInCenter())
+            if (CGPointEqualToPoint(_interactStartPoint, CGPointZero) || self.yb_currentPage() != self.yb_selfPage() || self.imageScrollView.isZooming) {
+                return;
+            }
+            
             CGPoint velocity = [pan velocityInView:self.imageScrollView];
-            CGFloat triggerDistance = profile.triggerDistance;
-            CGFloat offsetY = self.imageScrollView.contentOffset.y, height = self.imageScrollView.bounds.size.height;
 
-            BOOL distanceArrive = ABS(point.x - _interactStartPoint.x) < triggerDistance && ABS(velocity.x) < 500;
-            BOOL upArrive = point.y - _interactStartPoint.y > triggerDistance && offsetY <= 1;
-            BOOL downArrive = point.y - _interactStartPoint.y < -triggerDistance && offsetY + height >= MAX(self.imageScrollView.contentSize.height, height) - 1;
+            BOOL shouldStart = NO;
+            /// 最后一张图且是向左滑动
+            if(data.lastImage && self.imageScrollView.zoomScale <= 1 && velocity.x < 0 && self.imageScrollView.contentOffset.y <= 0) {
+                
+                NSLog(@" _leftScroll 222222 %@", NSStringFromCGPoint(velocity));
+                
+                if (!_leftScroll) {
+                    _leftScroll = YES;
+                }
+                shouldStart = YES;
+            } else {
+                CGFloat triggerDistance = profile.triggerDistance;
+                CGFloat offsetY = self.imageScrollView.contentOffset.y, height = self.imageScrollView.bounds.size.height;
+                
+                BOOL distanceArrive = ABS(point.x - _interactStartPoint.x) < triggerDistance && ABS(velocity.x) < 500;
+                BOOL upArrive = point.y - _interactStartPoint.y > triggerDistance && offsetY <= 1;
+                BOOL downArrive = point.y - _interactStartPoint.y < -triggerDistance && offsetY + height >= MAX(self.imageScrollView.contentSize.height, height) - 1;
 
-            BOOL shouldStart = (upArrive || downArrive) && distanceArrive;
+                shouldStart = (upArrive || downArrive) && distanceArrive;
+            }
+            
             if (!shouldStart) return;
 
             _interactStartPoint = point;

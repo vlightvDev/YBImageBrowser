@@ -37,8 +37,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = UIColor.blackColor;
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToLongPress:)];
-        [self addGestureRecognizer:longPress];
+//        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToLongPress:)];
+//        [self addGestureRecognizer:longPress];
         [self initValue];
     }
     return self;

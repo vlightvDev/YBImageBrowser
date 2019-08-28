@@ -15,7 +15,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _verticalFillType = YBIBImageFillTypeCompletely;
+        _verticalFillType = YBIBImageFillTypeFullWidth;
         _horizontalFillType = YBIBImageFillTypeFullWidth;
         _zoomScaleSurplus = 1.5;
     }

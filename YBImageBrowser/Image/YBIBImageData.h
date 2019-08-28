@@ -58,6 +58,9 @@ typedef void (^YBIBImageScrollViewStatusBlock)(YBIBImageData *imageData, UIScrol
 /// 网络图片资源
 @property (nonatomic, copy, nullable) NSURL *imageURL;
 
+/// The default is NO. 是否最后一张图
+@property (nonatomic, assign) BOOL lastImage;
+
 /// 修改 NSURLRequest 并返回
 @property (nonatomic, copy, nullable) YBIBRequestModifierBlock requestModifier;
 

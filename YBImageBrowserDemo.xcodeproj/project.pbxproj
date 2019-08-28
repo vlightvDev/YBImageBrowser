@@ -16,6 +16,7 @@
 		231F04AC22A8A95B00C335FE /* localBigImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F049522A8A95A00C335FE /* localBigImage0.jpeg */; };
 		231F04B922A8A95B00C335FE /* localLongImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F04A222A8A95A00C335FE /* localLongImage0.jpeg */; };
 		231FD3DD231539570016D426 /* YBIBDefaultWebImageMediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */; };
+		23424850231660D00026BFDD /* localLongImage1.png in Resources */ = {isa = PBXBuildFile; fileRef = 2342484F231660D00026BFDD /* localLongImage1.png */; };
 		23556E4322D77F43004178DA /* YBIBContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23556E4222D77F43004178DA /* YBIBContainerView.m */; };
 		23ABA2A722D0BAB700535F6A /* YBIBAuxiliaryViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26D22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.m */; };
 		23ABA2A822D0BAB700535F6A /* YBIBLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26F22D0BAB600535F6A /* YBIBLoadingView.m */; };
@@ -105,6 +106,7 @@
 		232D0EF722D2DFED00666331 /* YBIBOrientationReceiveProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBOrientationReceiveProtocol.h; sourceTree = "<group>"; };
 		232D0EF822D2F3AC00666331 /* YBIBOperateBrowserProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBOperateBrowserProtocol.h; sourceTree = "<group>"; };
 		233BD69522C6497100F4CEF3 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		2342484F231660D00026BFDD /* localLongImage1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = localLongImage1.png; sourceTree = "<group>"; };
 		23556E4122D77F43004178DA /* YBIBContainerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBContainerView.h; sourceTree = "<group>"; };
 		23556E4222D77F43004178DA /* YBIBContainerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBContainerView.m; sourceTree = "<group>"; };
 		23ABA26C22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBAuxiliaryViewHandler.h; sourceTree = "<group>"; };
@@ -523,6 +525,7 @@
 				23CC350022DC71220037018B /* localImage1.gif */,
 				231F049522A8A95A00C335FE /* localBigImage0.jpeg */,
 				231F04A222A8A95A00C335FE /* localLongImage0.jpeg */,
+				2342484F231660D00026BFDD /* localLongImage1.png */,
 				23CC34F922DC6B3F0037018B /* ImageURLs.plist */,
 				23CC34FC22DC6BC50037018B /* BaseFileManager.h */,
 				23CC34FD22DC6BC50037018B /* BaseFileManager.m */,
@@ -674,6 +677,7 @@
 				23CC34E222DC2D6D0037018B /* BaseListCell.xib in Resources */,
 				23ABA2BC22D0BAB700535F6A /* YBImageBrowser.bundle in Resources */,
 				23CC350822DC7CAF0037018B /* TestCustomCell.xib in Resources */,
+				23424850231660D00026BFDD /* localLongImage1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

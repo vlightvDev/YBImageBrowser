@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, YBIBImageFillType) {
 
 @interface YBIBImageLayout : NSObject <YBIBImageLayout>
 
-/// 纵向的填充方式，默认 YBIBImageFillTypeCompletely
+/// 纵向的填充方式，默认 YBIBImageFillTypeFullWidth
 @property (nonatomic, assign) YBIBImageFillType verticalFillType;
 
 /// 横向的填充方式，默认 YBIBImageFillTypeFullWidth
