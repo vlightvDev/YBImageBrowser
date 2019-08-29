@@ -440,7 +440,6 @@
                 BOOL distanceArrive = ABS(point.x - _interactStartPoint.x) < triggerDistance && ABS(velocity.x) < 500;
                 BOOL upArrive = point.y - _interactStartPoint.y > triggerDistance && offsetY <= 1;
                 BOOL downArrive = point.y - _interactStartPoint.y < -triggerDistance && offsetY + height >= MAX(self.imageScrollView.contentSize.height, height) - 1;
-
                 shouldStart = (upArrive || downArrive) && distanceArrive;
             }
             

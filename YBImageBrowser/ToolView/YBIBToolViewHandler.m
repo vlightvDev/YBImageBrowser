@@ -62,7 +62,15 @@
     CGSize containerSize = self.yb_containerSize(orientation);
     UIEdgeInsets padding = YBIBPaddingByBrowserOrientation(orientation);
     
-    self.topView.frame = CGRectMake(padding.left, padding.top, containerSize.width - padding.left - padding.right, [YBIBTopView defaultHeight]);
+    CGFloat height = [YBIBTopView defaultHeight], bottom = 15;
+    CGFloat width = containerSize.width - padding.left - padding.right;
+    CGFloat top = containerSize.height - height - bottom - padding.bottom;
+
+    if (YBIBIsIphoneXSeries()) {
+        bottom = 0;
+    }
+
+    self.topView.frame = CGRectMake(padding.left, top, width, height);
 }
 
 - (void)showSheetView {
@@ -109,7 +117,6 @@
 - (YBIBTopView *)topView {
     if (!_topView) {
         _topView = [YBIBTopView new];
-        _topView.operationType = YBIBTopViewOperationTypeMore;
         __weak typeof(self) wSelf = self;
         [_topView setClickOperation:^(YBIBTopViewOperationType type) {
             __strong typeof(wSelf) self = wSelf;

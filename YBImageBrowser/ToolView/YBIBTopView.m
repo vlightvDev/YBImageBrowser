@@ -25,7 +25,7 @@
         [self addSubview:self.pageLabel];
         [self addSubview:self.operationButton];
         
-        [self setOperationType:YBIBTopViewOperationTypeMore];
+        [self setOperationType:YBIBTopViewOperationTypeSave];
     }
     return self;
 }
@@ -33,15 +33,15 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     CGFloat height = self.bounds.size.height, width = self.bounds.size.width;
-    self.pageLabel.frame = CGRectMake(16, 0, width / 3, height);
-    CGFloat buttonWidth = 54;
-    self.operationButton.frame = CGRectMake(width - buttonWidth, 0, buttonWidth, height);
+    self.pageLabel.frame = CGRectMake(15, 0, 40, height);
+    CGFloat buttonWidth = 56;
+    self.operationButton.frame = CGRectMake(width - buttonWidth - 15, 0, buttonWidth, height);
 }
 
 #pragma mark - public
 
 + (CGFloat)defaultHeight {
-    return 50;
+    return 28;
 }
 
 - (void)setPage:(NSInteger)page totalPage:(NSInteger)totalPage {
@@ -51,12 +51,7 @@
         self.pageLabel.hidden  = NO;
         
         NSString *text = [NSString stringWithFormat:@"%ld/%ld", page + (NSInteger)1, totalPage];
-        NSShadow *shadow = [NSShadow new];
-        shadow.shadowBlurRadius = 4;
-        shadow.shadowOffset = CGSizeMake(0, 1);
-        shadow.shadowColor = UIColor.darkGrayColor;
-        NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSShadowAttributeName:shadow}];
-        self.pageLabel.attributedText = attr;
+        self.pageLabel.text = text;
     }
 }
 
@@ -83,7 +78,7 @@
     UIImage *image = nil;
     switch (operationType) {
         case YBIBTopViewOperationTypeSave:
-            image = [YBIBIconManager sharedManager].toolSaveImage();
+            image = nil;
             break;
         case YBIBTopViewOperationTypeMore:
             image = [YBIBIconManager sharedManager].toolMoreImage();
@@ -97,8 +92,11 @@
     if (!_pageLabel) {
         _pageLabel = [UILabel new];
         _pageLabel.textColor = [UIColor whiteColor];
-        _pageLabel.font = [UIFont boldSystemFontOfSize:16];
-        _pageLabel.textAlignment = NSTextAlignmentLeft;
+        _pageLabel.font = [UIFont boldSystemFontOfSize:13];
+        _pageLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _pageLabel.layer.cornerRadius = 4;
+        _pageLabel.layer.masksToBounds = YES;
+        _pageLabel.textAlignment = NSTextAlignmentCenter;
         _pageLabel.adjustsFontSizeToFitWidth = YES;
     }
     return _pageLabel;
@@ -107,14 +105,14 @@
 - (UIButton *)operationButton {
     if (!_operationButton) {
         _operationButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _operationButton.titleLabel.font = [UIFont boldSystemFontOfSize:16];
+        _operationButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];
         _operationButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+        [_operationButton setTitle:@"保存" forState:UIControlStateNormal];
         [_operationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_operationButton addTarget:self action:@selector(clickOperationButton:) forControlEvents:UIControlEventTouchUpInside];
-        _operationButton.layer.shadowColor = UIColor.darkGrayColor.CGColor;
-        _operationButton.layer.shadowOffset = CGSizeMake(0, 1);
-        _operationButton.layer.shadowOpacity = 1;
-        _operationButton.layer.shadowRadius = 4;
+        _operationButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _operationButton.layer.cornerRadius = 4;
+        _operationButton.layer.masksToBounds = YES;
     }
     return _operationButton;
 }
