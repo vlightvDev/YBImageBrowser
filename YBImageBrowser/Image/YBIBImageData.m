@@ -60,6 +60,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     _freezing = NO;
     _cuttingSentinel = [YBIBSentinel new];
     _interactionProfile = [YBIBInteractionProfile new];
+    _allowSaveToPhotoAlbum = YES;
 }
 
 #pragma mark - load data
@@ -199,7 +200,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         // Do not need to decode If 'image' conformed 'YYAnimatedImage'. (Not entirely accurate.)
         if (![image conformsToProtocol:@protocol(YYAnimatedImage)]) {
             CGImageRef cgImage = YYCGImageCreateDecodedCopy(image.CGImage, shouldPreDecode);
-            image = [UIImage imageWithCGImage:cgImage];
+            image = [UIImage imageWithCGImage:cgImage scale:image.scale orientation:image.imageOrientation];
             if (cgImage) CGImageRelease(cgImage);
         }
         YBIB_DISPATCH_ASYNC_MAIN(^{
@@ -354,8 +355,8 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
                 thumbImage = [UIImage imageWithData:imageData];
             }
             // If the target image is ready, ignore the thumb image.
-            BOOL shouldIgnore = [self shouldCompress] ? (self.compressedImage != nil) : (thumbImage != nil);
-            if (!shouldIgnore) {
+            BOOL shouldIgnore = [self shouldCompress] ? (self.compressedImage != nil) : (self.originImage != nil);
+            if (!shouldIgnore && thumbImage) {
                 [self.delegate yb_imageData:self readyForThumbImage:thumbImage];
             }
         }];
@@ -382,26 +383,48 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
             complete(nil);
             return;
         }
-        // Physical pixel.
         CGFloat scale = self.originImage.scale;
-        CGRect rectOfPhysical = rect;
-        rectOfPhysical.origin.x *= scale;
-        rectOfPhysical.origin.y *= scale;
-        rectOfPhysical.size.width *= scale;
-        rectOfPhysical.size.height *= scale;
-        CGImageRef cgImage = CGImageCreateWithImageInRect(self.originImage.CGImage, rectOfPhysical);
+        CGFloat width = self.originImage.size.width;
+        CGFloat height = self.originImage.size.height;
+        
+        BOOL reverseWidthHeight = NO;
+        CGAffineTransform transform = CGAffineTransformIdentity;
+        switch (self.originImage.imageOrientation) {
+            case UIImageOrientationDown:
+            case UIImageOrientationDownMirrored:
+                CGAffineTransformTranslate(CGAffineTransformMakeRotation(-M_PI), -width, -height);
+                break;
+            case UIImageOrientationLeft:
+            case UIImageOrientationLeftMirrored:
+                transform = CGAffineTransformTranslate(CGAffineTransformMakeRotation(M_PI_2), 0, -height);
+                reverseWidthHeight = YES;
+                break;
+            case UIImageOrientationRight:
+            case UIImageOrientationRightMirrored:
+                transform = CGAffineTransformTranslate(CGAffineTransformMakeRotation(-M_PI_2), -width, 0);
+                reverseWidthHeight = YES;
+                break;
+            default: break;
+        }
+        transform = CGAffineTransformScale(transform, scale, scale);
+        CGRect correctRect = CGRectApplyAffineTransform(rect, transform);
+        CGImageRef cgImage = CGImageCreateWithImageInRect(self.originImage.CGImage, correctRect);
+        
         if (isCancelled()) {
             complete(nil);
             if (cgImage) CGImageRelease(cgImage);
             return;
         }
-        CGSize size = [self bestSizeOfCuttingWithOriginSize:CGSizeMake(CGImageGetWidth(cgImage) / scale, CGImageGetHeight(cgImage) / scale)];
-        UIImage *tmpImage = [UIImage imageWithCGImage:cgImage];
+        CGFloat cgWidth = reverseWidthHeight ? CGImageGetHeight(cgImage) : CGImageGetWidth(cgImage);
+        CGFloat cgHeight = reverseWidthHeight ? CGImageGetWidth(cgImage) : CGImageGetHeight(cgImage);
+        CGSize size = [self bestSizeOfCuttingWithOriginSize:CGSizeMake(cgWidth / scale, cgHeight / scale)];
+        UIImage *tmpImage = [UIImage imageWithCGImage:cgImage scale:self.originImage.scale orientation:self.originImage.imageOrientation];
         if (isCancelled()) {
             complete(nil);
             if (cgImage) CGImageRelease(cgImage);
             return;
         }
+        
         // Ensure the best display effect.
         UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale);
         [tmpImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
@@ -541,7 +564,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 
 #pragma mark - <YBIBDataProtocol>
 
-@synthesize yb_isTransitioning = _yb_isTransitioning;
+@synthesize yb_isHideTransitioning = _yb_isHideTransitioning;
 @synthesize yb_currentOrientation = _yb_currentOrientation;
 @synthesize yb_containerSize = _yb_containerSize;
 @synthesize yb_containerView = _yb_containerView;
@@ -565,6 +588,10 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     if (!self.delegate) {
         [self loadData];
     }
+}
+
+- (BOOL)yb_allowSaveToPhotoAlbum {
+    return self.allowSaveToPhotoAlbum;
 }
 
 - (void)yb_saveToPhotoAlbum {
@@ -619,7 +646,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 }
 - (id<YBIBImageDataDelegate>)delegate {
     // Stop sending data to the '_delegate' if it is transiting.
-    return self.yb_isTransitioning() ? nil : _delegate;
+    return self.yb_isHideTransitioning() ? nil : _delegate;
 }
 
 - (void)setImageURL:(NSURL *)imageURL {

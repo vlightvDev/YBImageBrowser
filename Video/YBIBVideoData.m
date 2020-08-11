@@ -40,6 +40,7 @@ extern CGImageRef YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeFor
     _repeatPlayCount = 0;
     _autoPlayCount = 0;
     _shouldHideForkButton = NO;
+    _allowSaveToPhotoAlbum = YES;
 }
 
 #pragma mark - load data
@@ -127,7 +128,7 @@ extern CGImageRef YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeFor
 @synthesize yb_currentOrientation = _yb_currentOrientation;
 @synthesize yb_containerView = _yb_containerView;
 @synthesize yb_containerSize = _yb_containerSize;
-@synthesize yb_isTransitioning = _yb_isTransitioning;
+@synthesize yb_isHideTransitioning = _yb_isHideTransitioning;
 @synthesize yb_auxiliaryViewHandler = _yb_auxiliaryViewHandler;
 
 - (nonnull Class)yb_classOfCell {
@@ -159,6 +160,10 @@ extern CGImageRef YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeFor
     if (!self.delegate) {
         [self loadData];
     }
+}
+
+- (BOOL)yb_allowSaveToPhotoAlbum {
+    return self.allowSaveToPhotoAlbum;
 }
 
 - (void)yb_saveToPhotoAlbum {
@@ -285,7 +290,7 @@ didFinishDownloadingToURL:(NSURL *)location {
 }
 - (id<YBIBVideoDataDelegate>)delegate {
     // Stop sending data to the '_delegate' if it is transiting.
-    return self.yb_isTransitioning() ? nil : _delegate;
+    return self.yb_isHideTransitioning() ? nil : _delegate;
 }
 
 @end
