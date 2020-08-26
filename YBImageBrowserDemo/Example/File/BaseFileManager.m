@@ -17,7 +17,7 @@
 }
 
 + (NSArray *)imageNames {
-    return @[@"localImage1.gif", @"localImage0.jpg", @"localBigImage0.jpeg", @"localLongImage0.jpeg", @"localLongImage1.png"];
+    return @[@"localImage1.gif", @"localImage0.jpg", @"localBigImage0.jpeg", @"localLongImage0.jpeg", @"localBigImage0.jpeg"];
 }
 
 + (NSArray *)videos {
