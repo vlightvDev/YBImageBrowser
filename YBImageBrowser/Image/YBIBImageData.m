@@ -554,10 +554,6 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     }
 }
 
-- (void)UIImageWriteToSavedPhotosAlbum_completedWithImage:(UIImage *)image error:(NSError *)error context:(void *)context {
-    [self saveToPhotoAlbumCompleteWithError:error];
-}
-
 - (YBIBImageCache *)imageCache {
     return self.yb_backView.ybib_imageCache;
 }
@@ -601,7 +597,14 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         }];
     };
     void(^saveImage)(UIImage *) = ^(UIImage * _Nonnull image){
-        UIImageWriteToSavedPhotosAlbum(image, self, @selector(UIImageWriteToSavedPhotosAlbum_completedWithImage:error:context:), NULL);
+        /// 异步执行修改操作
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self saveToPhotoAlbumCompleteWithError:error];
+            });
+        }];
     };
     void(^unableToSave)(void) = ^(){
         [self.yb_auxiliaryViewHandler() yb_showIncorrectToastWithContainer:self.yb_containerView text:[YBIBCopywriter sharedCopywriter].unableToSave];
